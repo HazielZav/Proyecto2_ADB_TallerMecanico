@@ -40,12 +40,12 @@ namespace Proyecto2_ADB_TallerMecanico.Servicios
                         }
 
                         // 2. Insertar los Servicios asociados a esta orden
-                        if (orden.ServiciosDetalle != null && orden.ServiciosDetalle.Count > 0)
+                        if (orden.Detalles != null && orden.Detalles.Count > 0)
                         {
                             string queryServicio = @"INSERT INTO detalle_orden_servicios (folio_orden, idservicio, cantidad, precio_aplicado) 
                                              VALUES (@folio, @idServicio, @cantidad, @precio)";
 
-                            foreach (var detalle in orden.ServiciosDetalle)
+                            foreach (var detalle in orden.Detalles)
                             {
                                 using (SqlCommand cmdServ = new SqlCommand(queryServicio, con, trans))
                                 {
@@ -225,8 +225,6 @@ namespace Proyecto2_ADB_TallerMecanico.Servicios
             }
             return lista;
         }
-} // Fin de la clase
-
         public decimal CalcularIVA(decimal subtotal)
         {
             return subtotal * 0.16m;
