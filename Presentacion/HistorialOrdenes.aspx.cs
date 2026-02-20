@@ -13,6 +13,7 @@ namespace Proyecto2_ADB_TallerMecanico.Presentacion
     public partial class HistorialOrdenes : Page
     {
         private OrdenService _ordenService = new OrdenService();
+        private DetalleOrdenServicioService _detalleService = new DetalleOrdenServicioService();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -58,16 +59,48 @@ namespace Proyecto2_ADB_TallerMecanico.Presentacion
             }
         }
 
+        protected void gvOrdenes_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "VerDetalles")
+            {
+                int folio = Convert.ToInt32(e.CommandArgument);
+
+                CargarDetallesDeLaOrden(folio);
+            }
+        }
+
+        private void CargarDetallesDeLaOrden(int folio)
+        {
+            try
+            {
+                var detalles = _detalleService.ObtenerDetallesPorFolio(folio);
+
+                gvDetallesOrden.DataSource = detalles;
+                gvDetallesOrden.DataBind();
+
+                lblFolioSeleccionado.Text = folio.ToString();
+                pnlDetalles.Visible = true; // Hacemos visible el panel de abajo
+            }
+            catch (Exception ex)
+            {
+                Response.Write("<script>alert('Error al cargar los detalles: " + ex.Message + "');</script>");
+            }
+        }
+
+        protected void btnCerrarDetalles_Click(object sender, EventArgs e)
+        {
+            pnlDetalles.Visible = false;
+        }
+
         protected void btnNuevaOrden_Click(object sender, EventArgs e)
         {
-            // Pasamos el idCliente a la pantalla de Registro de Orden
             string idCliente = Request.QueryString["idCliente"];
-            Response.Redirect($"RegistroOrden.aspx?idCliente={idCliente}");
+            Response.Redirect($"~/Presentacion/RegistroOrden.aspx?idCliente={idCliente}");
         }
 
         protected void btnVolver_Click(object sender, EventArgs e)
         {
-            Response.Redirect("Default.aspx");
+            Response.Redirect("~/Default.aspx");
         }
     }
 }
