@@ -125,6 +125,26 @@ namespace Proyecto2_ADB_TallerMecanico.Presentacion
             lblTotal.Text = total.ToString("C2");
         }
 
+        protected void gvDetalles_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            // Verificamos que el botón presionado sea el de eliminar
+            if (e.CommandName == "EliminarServicio")
+            {
+                int indice = Convert.ToInt32(e.CommandArgument);
+
+                // Traemos nuestra lista de la sesión
+                var listaActual = Carrito;
+
+                if (indice >= 0 && indice < listaActual.Count)
+                {
+                    listaActual.RemoveAt(indice);
+
+                    Carrito = listaActual;
+                    ActualizarGridYTotales();
+                }
+            }
+        }
+
         protected void btnGuardarOrden_Click(object sender, EventArgs e)
         {
             var listaDetalles = Carrito;

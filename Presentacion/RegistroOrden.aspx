@@ -42,13 +42,21 @@
                 </div>
 
                 <asp:GridView ID="gvDetalles" runat="server" AutoGenerateColumns="False" 
-                    CssClass="table table-bordered table-striped text-center align-middle" EmptyDataText="No hay servicios agregados a la orden.">
-                    <Columns>
+                    CssClass="table table-bordered table-striped text-center align-middle" 
+                    EmptyDataText="No hay servicios agregados a la orden."
+                    OnRowCommand="gvDetalles_RowCommand"> <Columns>
                         <asp:BoundField DataField="IdServicio" HeaderText="ID SERVICIO" />
                         <asp:BoundField DataField="NombreServicio" HeaderText="DESCRIPCIÓN" ItemStyle-CssClass="text-start" />
                         <asp:BoundField DataField="Cantidad" HeaderText="CANTIDAD" />
                         <asp:BoundField DataField="Precio" HeaderText="PRECIO" DataFormatString="{0:C2}" />
                         <asp:BoundField DataField="Importe" HeaderText="IMPORTE" DataFormatString="{0:C2}" />
+        
+                        <asp:TemplateField>
+                            <ItemTemplate>
+                                <asp:Button ID="btnEliminar" runat="server" Text="X" CssClass="btn btn-danger btn-sm fw-bold" 
+                                    CommandName="EliminarServicio" CommandArgument='<%# Container.DataItemIndex %>' />
+                            </ItemTemplate>
+                        </asp:TemplateField>
                     </Columns>
                     <HeaderStyle CssClass="table-dark" />
                 </asp:GridView>
