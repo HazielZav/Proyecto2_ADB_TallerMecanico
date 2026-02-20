@@ -1,9 +1,12 @@
-﻿using Proyecto2_ADB_TallerMecanico.Servicios.Data;
+﻿using Proyecto2_ADB_TallerMecanico.Modelos;
+using Proyecto2_ADB_TallerMecanico.Servicios.Data;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 
 namespace Proyecto2_ADB_TallerMecanico.Servicios
@@ -12,17 +15,134 @@ namespace Proyecto2_ADB_TallerMecanico.Servicios
     {
         private ConexionBDMSSQL _conexion = new ConexionBDMSSQL();
 
-        public DataTable ListarClientes()
+        public List<Cliente> ObtenerTodosLosClientes()
         {
-            DataTable dt = new DataTable();
+            List<Cliente> lista = new List<Cliente>();
             using (SqlConnection con = _conexion.GetConexion())
             {
-                string query = "SELECT idcliente, (nombre + ' ' + apellidopaterno) as Nombre FROM clientes";
-                SqlDataAdapter da = new SqlDataAdapter(query, con);
-                da.Fill(dt);
+                string query = "SELECT * FROM clientes";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            lista.Add(new Cliente
+                            {
+                                IdCliente = Convert.ToInt32(reader["idcliente"]),
+                                RFC = reader["rfc"].ToString(),
+                                Nombre = reader["nombre"].ToString(),
+                                ApellidoPaterno = reader["apellidopaterno"].ToString(),
+                                ApellidoMaterno = reader["apellidomaterno"].ToString(),
+                                Calle = reader["calle"].ToString(),
+                                Numero = reader["numero"].ToString(),
+                                Colonia = reader["colonia"].ToString(),
+                                CodigoPostal = reader["codigopostal"].ToString(),
+                                Ciudad = reader["ciudad"].ToString(),
+                                Telefono1 = reader["telefono1"].ToString(),
+                                Telefono2 = reader["telefono2"].ToString(),
+                                Telefono3 = reader["telefono3"].ToString(),
+                                Correo_Electronico = reader["correo_electronico"].ToString()
+                            });
+                        }
+                    }
+                }
             }
-            return dt;
+            return lista;
         }
+
+        public List<OrdenServicio> ObtenerOrdenesPorCliente(int idCliente)
+        {
+            List<OrdenServicio> lista = new List<OrdenServicio>();
+            using (SqlConnection con = _conexion.GetConexion())
+            {
+                // Join con vehículos para saber de qué cliente es la orden
+                string query = @"SELECT o.* FROM ordenes_servicio o
+                             INNER JOIN vehiculos v ON o.idvehiculo = v.idvehiculo
+                             WHERE v.idcliente = @IdCliente";
+
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@IdCliente", idCliente);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            lista.Add(new OrdenServicio
+                            {
+                                Folio = Convert.ToInt32(reader["folio"]),
+                                Fecha_Ingreso = Convert.ToDateTime(reader["fecha_ingreso"]),
+                                Estado = reader["estado"].ToString(),
+                                Total = reader["costo_total"] != DBNull.Value ? Convert.ToDecimal(reader["costo_total"]) : 0,
+                                IdVehiculo = Convert.ToInt32(reader["idvehiculo"])
+                            });
+                        }
+                    }
+                }
+            }
+            return lista;
+        }
+
+        public List<Vehiculo> ObtenerVehiculosPorCliente(int idCliente)
+        {
+            List<Vehiculo> lista = new List<Vehiculo>();
+            using (SqlConnection con = _conexion.GetConexion())
+            {
+                string query = "SELECT * FROM vehiculos WHERE idcliente = @IdCliente";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.AddWithValue("@IdCliente", idCliente);
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            lista.Add(new Vehiculo
+                            {
+                                IdVehiculo = Convert.ToInt32(reader["idvehiculo"]),
+                                Numero_Serie = reader["numero_serie"].ToString(),
+                                Placas = reader["placas"].ToString(),
+                                Marca = reader["marca"].ToString(),
+                                Modelo = reader["modelo"].ToString(),
+                                Ano = Convert.ToInt32(reader["ano"]),
+                                Color = reader["color"].ToString(),
+                                Kilometraje = Convert.ToInt32(reader["kilometraje"]),
+                                Tipo = reader["tipo"].ToString(),
+                                IdCliente = Convert.ToInt32(reader["idcliente"])
+                            });
+                        }
+                    }
+                }
+            }
+            return lista;
+        }
+
+        public List<Servicio> ObtenerTodosLosServicios()
+        {
+            List<Servicio> lista = new List<Servicio>();
+            using (SqlConnection con = _conexion.GetConexion())
+            {
+                string query = "SELECT * FROM servicios";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            lista.Add(new Servicio
+                            {
+                                IdServicios = Convert.ToInt32(reader["idservicio"]),
+                                Nombre_Servcio = reader["nombre_servicio"].ToString(),
+                                Descripcion = reader["descripcion"].ToString(),
+                                Costo_Base = Convert.ToDecimal(reader["costo_base"]),
+                                Tiempo_Estimado_Hrs = Convert.ToDecimal(reader["tiempo_estimado_hrs"])
+                            });
+                        }
+                    }
+                }
+            }
+            return lista;
+        }
+} // Fin de la clase
 
         public decimal CalcularIVA(decimal subtotal)
         {

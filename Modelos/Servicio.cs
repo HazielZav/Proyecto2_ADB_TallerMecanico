@@ -7,10 +7,10 @@ namespace Proyecto2_ADB_TallerMecanico.Modelos
 {
     public class Servicio
     {
-        int IdServicios { get; set; }
-        string Nombre_Servcio { get; set; }
-        string Descripcion { get; set; }
-        decimal Costo_Base { get; set; }
-        decimal Tiempo_Estimado_Hrs { get; set; }
+        public int IdServicios { get; set; }
+        public string Nombre_Servcio { get; set; }
+        public string Descripcion { get; set; }
+        public decimal Costo_Base { get; set; }
+        public  decimal Tiempo_Estimado_Hrs { get; set; }
     }
 }
