@@ -22,6 +22,13 @@ namespace Proyecto2_ADB_TallerMecanico.Modelos
         public string Telefono3 { get; set; }
         public string Correo_Electronico { get; set; }
         public DateTime Fecha_Registro { get; }
-        
+        public string ClienteInfo
+        {
+            get
+            {
+                return RFC + " - " + Nombre + " " + ApellidoPaterno;
+            }
+        }
+
     }
 }

@@ -11,7 +11,7 @@ namespace Proyecto2_ADB_TallerMecanico.Servicios.Data
     {
         public string GetCadenaConexion()
         {
-            return ConfigurationManager.ConnectionStrings["CadenaSQLServer"].ConnectionString;
+            return ConfigurationManager.ConnectionStrings["CadenaSQLServerLocal"].ConnectionString;
         }
 
         public SqlConnection GetConexion()
