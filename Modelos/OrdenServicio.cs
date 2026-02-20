@@ -16,5 +16,6 @@ namespace Proyecto2_ADB_TallerMecanico.Modelos
         public decimal IVA { get; set; } 
         public decimal Total { get; set; }
         public int IdVehiculo { get; set; }
+        public List<DetalleOrdenServicio> Detalles { get; set; }
     }
 }

@@ -264,6 +264,7 @@
     <Compile Include="Modelos\Vehiculo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Servicios\Data\ConexionBDMSSQL.cs" />
+    <Compile Include="Servicios\DetalleOrdenServicioService.cs" />
     <Compile Include="Servicios\OrdenService.cs" />
     <Compile Include="Servicios\ServicioService.cs" />
     <Compile Include="Site.Master.cs">
